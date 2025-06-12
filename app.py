@@ -48,7 +48,7 @@ def speach2Txt(stopword):
     return ("".join(questArray))
 
 # Path to your custom-trained model
-model_name ='https:\\github.com\harish-kumar-kp\QandA_ChatBot_with_AccuracyChecking\tree\f92f777235ecabff6339f2858cabe4b07518ff51\model\customTrained_Distilbert_Squad'
+model_name ='model\customTrained_Distilbert_Squad'
 # Load pre-trained DistilBERT model and tokenizer
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForQuestionAnswering.from_pretrained(model_name)
