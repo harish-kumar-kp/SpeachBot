@@ -8,8 +8,7 @@ def text2Speach(text,x,y):
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')       #getting details of current voice
     engine.setProperty('voice', voices[x].id)   #changing index, changes voices. 1 for female
-    rate = engine.getProperty('rate')   # getting details of current speaking rate
-    #print (rate)                        #printing current voice rate
+    rate = engine.getProperty('rate')   # getting details of current speaking rate                        #printing current voice rate
     engine.setProperty('rate', y)     # setting up new voice rate
     engine.say(text)
     engine.runAndWait()
@@ -193,14 +192,13 @@ with col2:
             command = (speach2Txt("alita")).strip()
             if "start reading" in command or "read context" in command or "read it" in command :
                 text2Speach(passage ,gender,speed )
-                
-                
+           
             elif "change the" in command or "back to" in command or "choose another" in command or "go to" in command or "skip this" in command or "wrong" in command or "wrong topic" in command:   
                 st.rerun()
+                
             elif "skip" in command or "skip reading" in command or "questions" in command or "pass" in command:
                 pass
-            #if st.button("Listen to Question"):
-            #st.write()
+
     x=1
 with col3:
     while(x):
@@ -228,11 +226,8 @@ with col3:
             # Display the answer
             st.write(":green[Answer:]", answer)
             text2Speach("Answer.......   "+ answer,gender,speed)
-            
-            
             question = ""
 
-#except:
 st.write("")
 st.write("")
 st.write("")
