@@ -16,9 +16,6 @@ def text2Speach(text,x,y):
     engine.say(text)
     engine.runAndWait()
     
-
-
-
 import speech_recognition as sr
 def speach2Txt(stopword):
     questArray=[]
@@ -50,12 +47,9 @@ def speach2Txt(stopword):
                 questArray.append(finalTxt)
     return ("".join(questArray))
 
-
-
 # Path to your custom-trained model
-model_name ='model/customTrained_Distilbert_Squad'
+model_name ='https://github.com/harish-kumar-kp/QandA_ChatBot_with_AccuracyChecking/tree/f92f777235ecabff6339f2858cabe4b07518ff51/model'
 # Load pre-trained DistilBERT model and tokenizer
-#model_name = "model/customTrained_Distilbert_Squad"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForQuestionAnswering.from_pretrained(model_name)
 
