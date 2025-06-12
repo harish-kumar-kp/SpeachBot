@@ -1,9 +1,7 @@
 import streamlit as st
 from streamlit_player import st_player
-#from PIL import Image
 import json
-from transformers import AutoTokenizer, AutoModelForQuestionAnswering , pipeline
-import torch
+from transformers import pipeline
 
 import pyttsx3
 def text2Speach(text,x,y):
@@ -16,6 +14,7 @@ def text2Speach(text,x,y):
     engine.say(text)
     engine.runAndWait()
     
+
 import speech_recognition as sr
 def speach2Txt(stopword):
     questArray=[]
@@ -47,11 +46,6 @@ def speach2Txt(stopword):
                 questArray.append(finalTxt)
     return ("".join(questArray))
 
-# Path to your custom-trained model
-model_name ='model\customTrained_Distilbert_Squad'
-# Load pre-trained DistilBERT model and tokenizer
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForQuestionAnswering.from_pretrained(model_name)
 
 # Streamlit App
 st.set_page_config(
@@ -155,7 +149,6 @@ with col2:
     
     passage = ""
     # Text input for the passage
-    #height = st.slider("Set the height of the text area", 1, 1000, 95)
     spechQuest =""
     topicChoose=""
     
@@ -176,8 +169,7 @@ with col2:
                 
     if passage == None:
         text2Speach("Please , Choose a topic",gender,speed )
-       
-        
+               
     else:
         passage = st.text_area("Topic Context for Questions, Reading voice with voice command 'start reading alita' or skip reading by 'skip reading alita' ",value = context ,height=180)
 
@@ -190,11 +182,7 @@ with col2:
         st.write(wikiLink)
     
         text2Speach("speak out voice command start reading alita or skip reading alita",gender,speed)
-        #st.write(len(passage))
-        #st.write(idx)
-        #st.write(topicChoose )
-        
-        #if st.button("Read Passage"):
+
         if passage == "":
             text2Speach("Hi ,Please choose the topic of context ",gender,speed)
             
@@ -207,7 +195,7 @@ with col2:
                 text2Speach(passage ,gender,speed )
                 
                 
-            elif "change the" in command or "back to" in command or "choose another" in command or "go to" in command or "skip this" in command or "wrong" in command:   
+            elif "change the" in command or "back to" in command or "choose another" in command or "go to" in command or "skip this" in command or "wrong" in command or "wrong topic" in command:   
                 st.rerun()
             elif "skip" in command or "skip reading" in command or "questions" in command or "pass" in command:
                 pass
@@ -225,35 +213,24 @@ with col3:
         if "change" in spechQuest or "back to" in spechQuest or "choose another" in spechQuest or "go to" in spechQuest or "skip this" in spechQuest:
             context = ""
             st.rerun()
+            
         elif "bye" in spechQuest or "see you" in spechQuest or "later" in spechQuest or "stop" in spechQuest or "thank you" in spechQuest:
             st.stop()
+            
         else:
-            st.write(":red[Question:]"+ str(spechQuest))
             question = str(spechQuest)
-            inputs = tokenizer.encode_plus(question, passage, return_tensors="pt")
-            input_ids = inputs["input_ids"].tolist()[0]
+            st.write(":red[Question:]"+ str(spechQuest))
+            
+            question_answerer = pipeline("question-answering", model='distilbert-base-cased-distilled-squad')
+            result = question_answerer(question=question,context=passage)
 
-            # Get the model's outputs (start and end logits)
-            outputs = model(**inputs)
-            start_scores = outputs.start_logits
-            end_scores = outputs.end_logits
-
-            # Get the most likely start and end tokens
-            start_index = torch.argmax(start_scores)
-            end_index = torch.argmax(end_scores) + 1
-
-            # Decode the tokens into the answer string
-            answer = tokenizer.convert_tokens_to_string(
-                tokenizer.convert_ids_to_tokens(input_ids[start_index:end_index])
-            )
+            answer = result['answer']
             # Display the answer
             st.write(":green[Answer:]", answer)
-            text2Speach("Answer.......   "+answer,gender,speed)
+            text2Speach("Answer.......   "+ answer,gender,speed)
             
             
             question = ""
-
-
 
 #except:
 st.write("")
